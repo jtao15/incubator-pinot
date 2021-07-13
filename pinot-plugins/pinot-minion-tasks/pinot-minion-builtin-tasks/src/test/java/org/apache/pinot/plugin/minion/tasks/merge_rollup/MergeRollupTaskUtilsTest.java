@@ -20,7 +20,6 @@ package org.apache.pinot.plugin.minion.tasks.merge_rollup;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.pinot.common.minion.Granularity;
 import org.apache.pinot.core.segment.processing.framework.MergeType;
 import org.apache.pinot.segment.spi.AggregationFunctionType;
 import org.testng.Assert;
@@ -31,21 +30,25 @@ import org.testng.annotations.Test;
 public class MergeRollupTaskUtilsTest {
   private final String METRIC_COLUMN_A = "metricColA";
   private final String METRIC_COLUMN_B = "metricColB";
+  private final String DAILY = "daily";
+  private final String MONTHLY = "monthly";
   private Map<String, String> _mergeRollupTaskConfig;
 
   @BeforeClass
   public void setUp() {
     Map<String, String> mergeRollupTaskConfig = new HashMap<>();
-    mergeRollupTaskConfig.put("aggregate.metricColA", "sum");
-    mergeRollupTaskConfig.put("aggregate.metricColB", "max");
-    mergeRollupTaskConfig.put("merge.daily.mergeType", "concat");
-    mergeRollupTaskConfig.put("merge.daily.bufferTime", "2d");
-    mergeRollupTaskConfig.put("merge.daily.maxNumRecordsPerSegment", "1000000");
-    mergeRollupTaskConfig.put("merge.daily.maxNumRecordsPerTask", "5000000");
-    mergeRollupTaskConfig.put("merge.monthly.mergeType", "rollup");
-    mergeRollupTaskConfig.put("merge.monthly.bufferTime", "30d");
-    mergeRollupTaskConfig.put("merge.monthly.maxNumRecordsPerSegment", "2000000");
-    mergeRollupTaskConfig.put("merge.monthly.maxNumRecordsPerTask", "5000000");
+    mergeRollupTaskConfig.put("metricColA.aggregationType", "sum");
+    mergeRollupTaskConfig.put("metricColB.aggregationType", "max");
+    mergeRollupTaskConfig.put("daily.mergeType", "concat");
+    mergeRollupTaskConfig.put("daily.bufferTimePeriod", "2d");
+    mergeRollupTaskConfig.put("daily.bucketTimePeriod", "1d");
+    mergeRollupTaskConfig.put("daily.maxNumRecordsPerSegment", "1000000");
+    mergeRollupTaskConfig.put("daily.maxNumRecordsPerTask", "5000000");
+    mergeRollupTaskConfig.put("monthly.mergeType", "rollup");
+    mergeRollupTaskConfig.put("monthly.bufferTimePeriod", "30d");
+    mergeRollupTaskConfig.put("monthly.bucketTimePeriod", "30d");
+    mergeRollupTaskConfig.put("monthly.maxNumRecordsPerSegment", "2000000");
+    mergeRollupTaskConfig.put("monthly.maxNumRecordsPerTask", "5000000");
     _mergeRollupTaskConfig = mergeRollupTaskConfig;
   }
 
@@ -62,21 +65,23 @@ public class MergeRollupTaskUtilsTest {
 
   @Test
   public void testGetAllMergeProperties() {
-    Map<Granularity, MergeProperties> allMergeProperties =
+    Map<String, MergeProperties> allMergeProperties =
         MergeRollupTaskUtils.getAllMergeProperties(_mergeRollupTaskConfig);
     Assert.assertEquals(allMergeProperties.size(), 2);
-    Assert.assertTrue(allMergeProperties.containsKey(Granularity.DAILY));
-    Assert.assertTrue(allMergeProperties.containsKey(Granularity.MONTHLY));
+    Assert.assertTrue(allMergeProperties.containsKey(DAILY));
+    Assert.assertTrue(allMergeProperties.containsKey(MONTHLY));
 
-    MergeProperties dailyProperty = allMergeProperties.get(Granularity.DAILY);
+    MergeProperties dailyProperty = allMergeProperties.get(DAILY);
     Assert.assertEquals(dailyProperty.getMergeType(), MergeType.CONCAT.name());
-    Assert.assertEquals(dailyProperty.getBufferTimeMs(), 172800000L);
+    Assert.assertEquals(dailyProperty.getBufferTimePeriod(), "2d");
+    Assert.assertEquals(dailyProperty.getBucketTimePeriod(), "1d");
     Assert.assertEquals(dailyProperty.getMaxNumRecordsPerSegment(), 1000000L);
     Assert.assertEquals(dailyProperty.getMaxNumRecordsPerTask(), 5000000L);
 
-    MergeProperties monthlyProperty = allMergeProperties.get(Granularity.MONTHLY);
+    MergeProperties monthlyProperty = allMergeProperties.get(MONTHLY);
     Assert.assertEquals(monthlyProperty.getMergeType(), MergeType.ROLLUP.name());
-    Assert.assertEquals(monthlyProperty.getBufferTimeMs(), 2592000000L);
+    Assert.assertEquals(monthlyProperty.getBufferTimePeriod(), "30d");
+    Assert.assertEquals(monthlyProperty.getBucketTimePeriod(), "30d");
     Assert.assertEquals(monthlyProperty.getMaxNumRecordsPerSegment(), 2000000L);
     Assert.assertEquals(monthlyProperty.getMaxNumRecordsPerTask(), 5000000L);
   }

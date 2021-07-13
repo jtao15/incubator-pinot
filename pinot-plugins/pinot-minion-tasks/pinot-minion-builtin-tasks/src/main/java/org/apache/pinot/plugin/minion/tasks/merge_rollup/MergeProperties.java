@@ -20,14 +20,18 @@ package org.apache.pinot.plugin.minion.tasks.merge_rollup;
 
 public class MergeProperties {
   private final String _mergeType;
-  private final long _bufferTimeMs;
+  private final String _bufferTimePeriod;
+  private final String _bucketTimePeriod;
+  private final String _roundBucketTimePeriod;
   private final long _maxNumRecordsPerSegment;
   private final long _maxNumRecordsPerTask;
 
-  public MergeProperties(String mergeType, long bufferTimeMs, long maxNumRecordsPerSegment,
-      long maxNumRecordsPerTask) {
+  public MergeProperties(String mergeType, String bufferTimePeriod, String bucketTimePeriod,
+      String roundBucketTimePeriod, long maxNumRecordsPerSegment, long maxNumRecordsPerTask) {
     _mergeType = mergeType;
-    _bufferTimeMs = bufferTimeMs;
+    _bufferTimePeriod = bufferTimePeriod;
+    _bucketTimePeriod = bucketTimePeriod;
+    _roundBucketTimePeriod = roundBucketTimePeriod;
     _maxNumRecordsPerSegment = maxNumRecordsPerSegment;
     _maxNumRecordsPerTask = maxNumRecordsPerTask;
   }
@@ -36,8 +40,16 @@ public class MergeProperties {
     return _mergeType;
   }
 
-  public long getBufferTimeMs() {
-    return _bufferTimeMs;
+  public String getBufferTimePeriod() {
+    return _bufferTimePeriod;
+  }
+
+  public String getBucketTimePeriod() {
+    return _bucketTimePeriod;
+  }
+
+  public String getRoundBucketTimePeriod() {
+    return _roundBucketTimePeriod;
   }
 
   public long getMaxNumRecordsPerSegment() {

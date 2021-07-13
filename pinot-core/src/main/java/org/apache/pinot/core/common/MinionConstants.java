@@ -31,6 +31,7 @@ public class MinionConstants {
   public static final String UPLOAD_URL_KEY = "uploadURL";
   public static final String DOT_SEPARATOR = ".";
   public static final String URL_SEPARATOR = ",";
+  public static final String SEGMENT_NAME_SEPARATOR = ",";
   public static final String AUTH_TOKEN = "authToken";
 
   /**
@@ -67,16 +68,22 @@ public class MinionConstants {
     public static final String GRANULARITY_KEY = "granularity";
 
     // Rollup aggregate function related configs
-    public static final String AGGREGATE_KEY_PREFIX = "aggregate";
+    public static final String AGGREGATION_TYPE_KEY_SUFFIX = ".aggregationType";
 
     // Merge properties related configs
-    public static final String MERGE_KEY_PREFIX = "merge";
-    public static final String BUFFER_TIME = "bufferTime";
+    public static final String BUFFER_TIME_PERIOD = "bufferTimePeriod";
+    public static final String BUCKET_TIME_PERIOD = "bucketTimePeriod";
+    public static final String ROUND_BUCKET_TIME_PERIOD = "roundBucketTimePeriod";
     public static final String MAX_NUM_RECORDS_PER_SEGMENT = "maxNumRecordsPerSegment";
     public static final String MAX_NUM_RECORDS_PER_TASK = "maxNumRecordsPerTask";
 
     // Segment name generator related configs
-    public static final String MERGED_SEGMENT_NAME_KEY = "mergedSegmentNameKey";
+    public static final String SEGMENT_NAME_PREFIX_KEY = "segmentNamePrefix";
+    public static final String SEGMENT_NAME_PREFIX = "merged";
+
+    // Window start and window end set by task generator
+    public static final String WINDOW_START_MS_KEY = "windowStartMs";
+    public static final String WINDOW_END_MS_KEY = "windowEndMs";
   }
 
   /**

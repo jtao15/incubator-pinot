@@ -25,6 +25,8 @@ import javax.annotation.Nullable;
 import org.apache.helix.model.HelixConfigScope;
 import org.apache.helix.model.builder.HelixConfigScopeBuilder;
 import org.apache.helix.task.TaskState;
+import org.apache.pinot.common.lineage.SegmentLineage;
+import org.apache.pinot.common.lineage.SegmentLineageAccessHelper;
 import org.apache.pinot.common.metadata.ZKMetadataProvider;
 import org.apache.pinot.common.metadata.segment.LLCRealtimeSegmentZKMetadata;
 import org.apache.pinot.common.metadata.segment.OfflineSegmentZKMetadata;
@@ -118,6 +120,18 @@ public class ClusterInfoAccessor {
   public MergeRollupTaskMetadata getMinionMergeRollupTaskMetadata(String tableNameWithType) {
     return MinionTaskMetadataUtils.getMergeRollupTaskMetadata(_pinotHelixResourceManager.getPropertyStore(),
             MinionConstants.MergeRollupTask.TASK_TYPE, tableNameWithType);
+  }
+
+  /**
+   * Get the segment lineage for the given table name with type suffix.
+   *
+   * @param tableNameWithType Table name with type suffix
+   * @return Segment lineage
+   */
+  @Nullable
+  public SegmentLineage getSegmentLineage(String tableNameWithType) {
+    return SegmentLineageAccessHelper
+        .getSegmentLineage(_pinotHelixResourceManager.getPropertyStore(), tableNameWithType);
   }
 
   /**
